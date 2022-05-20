@@ -2,13 +2,18 @@ package com.example.graphmaker;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+
 
 public class GraphmakerController {
-    @FXML
-    private Label welcomeText;
 
+    static int x;
+    static int y;
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
+    private TextField textX;
+    private TextField textY;
+    private TextField textRandB;
+    private TextField textRandE;
+    private TextField textN;
+
 }
