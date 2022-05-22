@@ -21,10 +21,6 @@ public class Graphmaker extends Application {
     }
 
     public static void main(String[] args) {
-
-        Graph main = new Graph(3,3);
-        main.generate(2.0, 3.0);
-        System.out.println(main.toString());
         launch();
     }
 }
