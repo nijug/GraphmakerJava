@@ -52,6 +52,14 @@ public class Graph {
             }
         }
     }
+    public int getX()
+    {
+        return x;
+    }
+    public int getY()
+    {
+        return y;
+    }
     public void save(String content, File file) {
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -86,6 +94,8 @@ public class Graph {
         }
 
     }
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(String.format("%d %d \n", x, y));
