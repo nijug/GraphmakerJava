@@ -16,9 +16,9 @@
       <Button fx:id="buttonGenerate" layoutX="1035.0" layoutY="5.0" mnemonicParsing="false" onAction="#onGenerateClick" prefHeight="30.0" prefWidth="60.0" text="Generuj" />
       <Button fx:id="buttonOpen" layoutX="1125.0" layoutY="5.0" mnemonicParsing="false" onAction="#onOpenClick" prefHeight="30.0" prefWidth="60.0" text="Otwórz" />
       <Button fx:id="buttonSave" layoutX="1215.0" layoutY="5.0" mnemonicParsing="false" onAction="#onSaveClick" prefHeight="30.0" prefWidth="60.0" text="Zapisz" />
-      <ScrollPane fx:id="ScrollPane" layoutX="5.0" layoutY="60.0" prefHeight="655.0" prefWidth="1270.0">
+      <ScrollPane fx:id="ScrollPane" hbarPolicy="ALWAYS" layoutX="5.0" layoutY="60.0" prefHeight="655.0" prefWidth="1270.0" vbarPolicy="ALWAYS">
          <content>
-            <Pane fx:id="canva" prefHeight="650.0" prefWidth="1266.0" style="-fx-background-color: Black;" />
+            <AnchorPane fx:id="canva" prefHeight="650.0" prefWidth="1266.0" style="-fx-background-color: Black;" />
          </content></ScrollPane>
    </children>
 </Pane>

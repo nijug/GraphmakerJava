@@ -1,14 +1,16 @@
 package com.example.graphmaker;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
@@ -90,21 +92,18 @@ public class GraphmakerController {
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 canva.getChildren().add(drawCircle(i,j));
+
                 if (j != y-1){
-                    canva.getChildren().add(drawRightLine(i,j));
+                    canva.getChildren().add(drawRightLine(i,j, main.findValue(main.getList(i * y + j),i * y + j+1)));
                 }
-                if (i!=x-1){
-                    canva.getChildren().add(drawDownLine(i,j));
+                if (i != x-1){
+                    canva.getChildren().add(drawDownLine(i,j,main.findValue(main.getList(i * y + j),(i + 1)* y + j)));
                 }
             }
         }
-        ScrollPane.setContent(canva);
-
-
     }
 
-    private Circle drawCircle(int i, int j)
-    {
+    private Circle drawCircle(int i, int j) {
         Circle circle = new Circle();
         circle.setCenterX((j*15)+20);
         circle.setCenterY((i*15)+20);
@@ -113,30 +112,31 @@ public class GraphmakerController {
         return circle;
     }
 
-    private Line drawRightLine(int i, int j)
-    {
+    private Line drawRightLine(int i, int j,double value) {
         Line line = new Line();
         line.setStartX((j*15)+26);
         line.setStartY((i*15)+20);
         line.setEndX((j*15)+35);
         line.setEndY((i*15)+20);
-        line.setStroke(Color.BLUE);
+        java.awt.Color color =hsbColor.generate(main.getRandB(), main.getRandE(), value);
+        javafx.scene.paint.Color fxColor = javafx.scene.paint.Color.rgb(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()/255.0);
+        line.setStroke(fxColor);
         line.setStrokeWidth(3);
 
         return line;
     }
 
 
-    private Line drawDownLine(int i, int j)
-    {
+    private Line drawDownLine(int i, int j,double value) {
         Line line = new Line();
         line.setStartX((j*15)+20);
         line.setStartY((i*15)+26);
         line.setEndX((j*15)+20);
         line.setEndY((i*15)+35);
-        line.setStroke(Color.BLUE);
+        java.awt.Color color = hsbColor.generate(main.getRandB(), main.getRandE(), value);
+        javafx.scene.paint.Color fxColor = javafx.scene.paint.Color.rgb(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()/255.0);
+        line.setStroke(fxColor);
         line.setStrokeWidth(3);
-
         return line;
     }
 }

@@ -20,7 +20,7 @@ public class Graph {
     private int n;
     private ArrayList<LinkedList<Node>> graph; //tablica list sąsiadów
 
-    private double findValue(LinkedList<Node> temp, int point) {
+   public double findValue(LinkedList<Node> temp, int point) {
         for (int i= 0; i< temp.size(); i++) {
         if (temp.get(i).getPoint()==point) return temp.get(i).getValue();
         }
@@ -52,14 +52,26 @@ public class Graph {
             }
         }
     }
-    public int getX()
-    {
+    public int getX() {
         return x;
     }
-    public int getY()
-    {
+    public int getY() {
         return y;
     }
+
+    public LinkedList<Node> getList(int index) {
+       return graph.get(index);
+    }
+
+    public double getRandB()
+    {
+        return randB;
+    }
+    public double getRandE()
+    {
+        return randE;
+    }
+
     public void save(String content, File file) {
         try {
             FileWriter fileWriter = new FileWriter(file);

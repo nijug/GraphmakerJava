@@ -7,13 +7,12 @@ public class Node {
     public Node(int point, double value){
         this.point=point;
         this.value=value;
-
     }
 
-    public double getValue(){
+    public double getValue() {
         return value;
     }
-    public int getPoint() {
+    public int getPoint(){
         return point;
     }
 }
