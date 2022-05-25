@@ -1,22 +1,15 @@
 package com.example.graphmaker;
-
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.stage.FileChooser;
 import java.io.File;
 
-
+// kontroler pośredniczy między view( funkcje do rysowania i plik fxml) i  modelem (graph)
 public class GraphmakerController {
 
     private int x;
@@ -25,7 +18,7 @@ public class GraphmakerController {
     private double randE;
     private int n;
 
-    private Graph main = new Graph();
+    private Graph main = new Graph(); // przechowywanie grafu
 
     @FXML
     private TextField textX;
@@ -44,99 +37,71 @@ public class GraphmakerController {
     @FXML
     private Button buttonSave;
     @FXML
-    private ScrollPane ScrollPane;
+    private ScrollPane ScrollPane; // okno ze scrollem
     @FXML
-    private Pane canva;
+    private AnchorPane canva; //czaarne tło do rysowania, dziecko scrollpane
+
     @FXML
-    public void onGenerateClick(ActionEvent event)
-    {
-        canva.getChildren().clear();
-        x=Integer.parseInt(textX.getText());
-        y=Integer.parseInt(textY.getText());
-        randB=Double.parseDouble(textRandB.getText());
-        randE=Double.parseDouble(textRandE.getText());
-        n=Integer.parseInt(textN.getText());
-        main.generate(x,y,randB,randE,n);
-        System.out.println(main);
-        canvas();
+    private void onGenerateClick(ActionEvent event) throws IllegalArgumentException, SizeException,RandException,DivideException { // pobiera dane z gui, wyrzuca exception jak są nieporawne
+
+        try {
+            x = Integer.parseInt(textX.getText());
+            y = Integer.parseInt(textY.getText());
+            if (x<1 || y <1)
+                throw new SizeException();
+            randB = Double.parseDouble(textRandB.getText());
+            randE = Double.parseDouble(textRandE.getText());
+            if (randB>randE || randB<0 || randE<0 || randB==randE)
+                throw new RandException();
+            n = Integer.parseInt(textN.getText());
+            if (n<0)
+                throw new DivideException();
+            main.generate(x, y, randB, randE);
+            System.out.println(main);
+            drawGraph();
+        } catch (IllegalArgumentException e) {
+            View.displayAlert("Nie podano wszystkich wartości, lub wartości są w nieodpowiednim formacie");
+        }
+
     }
+
     @FXML
-    public void onOpenClick(ActionEvent event) {
+    private void onOpenClick(ActionEvent event) { // okienko otwierania
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Plik tekstowy", "*.txt");
-
         fileChooser.getExtensionFilters().add(extFilter);
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             main.open(selectedFile);
-
+            System.out.println(main);
+            drawGraph();
         }
-
-        System.out.println(main);
     }
+
     @FXML
-    public void onSaveClick(ActionEvent event) {
+    private void onSaveClick(ActionEvent event) { //okienko zapisywania
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Plik tekstowy", "*.txt");
-
         fileChooser.getExtensionFilters().add(extFilter);
         File selectedFile = fileChooser.showSaveDialog(null);
         if (selectedFile != null) {
             main.save(main.toString(), selectedFile);
         }
-
     }
-    @FXML
-    private void canvas()
-    {
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                canva.getChildren().add(drawCircle(i,j));
 
-                if (j != y-1){
-                    canva.getChildren().add(drawRightLine(i,j, main.findValue(main.getList(i * y + j),i * y + j+1)));
+    @FXML
+    private void drawGraph() { // stąd wywoływać metody związane z rysowaniem
+        canva.getChildren().clear(); //wszystko co rysowane na czarnym tle jest dzieckiem canva(anchorpane)
+        for (int i = 0; i < main.getX(); i++) {
+            for (int j = 0; j < main.getY(); j++) {
+                canva.getChildren().add(View.drawCircle(i, j));
+                if (j != main.getY() - 1) {
+                    canva.getChildren().add(View.drawRightLine(i, j, main.findValue(main.getList(i * main.getY() + j), i * main.getY() + j + 1))); // value jest potrzebne żeby linia miała odpowiedni kolor
                 }
-                if (i != x-1){
-                    canva.getChildren().add(drawDownLine(i,j,main.findValue(main.getList(i * y + j),(i + 1)* y + j)));
+                if (i != main.getX() - 1) {
+                    canva.getChildren().add(View.drawDownLine(i, j, main.findValue(main.getList(i * main.getY() + j), (i + 1) * main.getY() + j)));
                 }
             }
         }
-    }
-
-    private Circle drawCircle(int i, int j) {
-        Circle circle = new Circle();
-        circle.setCenterX((j*15)+20);
-        circle.setCenterY((i*15)+20);
-        circle.setRadius(5);
-        circle.setFill(Color.WHITE);
-        return circle;
-    }
-
-    private Line drawRightLine(int i, int j,double value) {
-        Line line = new Line();
-        line.setStartX((j*15)+26);
-        line.setStartY((i*15)+20);
-        line.setEndX((j*15)+35);
-        line.setEndY((i*15)+20);
-        java.awt.Color color =hsbColor.generate(main.getRandB(), main.getRandE(), value);
-        javafx.scene.paint.Color fxColor = javafx.scene.paint.Color.rgb(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()/255.0);
-        line.setStroke(fxColor);
-        line.setStrokeWidth(3);
-
-        return line;
-    }
-
-
-    private Line drawDownLine(int i, int j,double value) {
-        Line line = new Line();
-        line.setStartX((j*15)+20);
-        line.setStartY((i*15)+26);
-        line.setEndX((j*15)+20);
-        line.setEndY((i*15)+35);
-        java.awt.Color color = hsbColor.generate(main.getRandB(), main.getRandE(), value);
-        javafx.scene.paint.Color fxColor = javafx.scene.paint.Color.rgb(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()/255.0);
-        line.setStroke(fxColor);
-        line.setStrokeWidth(3);
-        return line;
     }
 }

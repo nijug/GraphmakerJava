@@ -1,6 +1,6 @@
 package com.example.graphmaker;
 
-public class Node {
+public class Node { //do przechowywania dwóch typów danych w jednym indeksie listy
     double value;
     int point;
 
@@ -12,7 +12,7 @@ public class Node {
     public double getValue() {
         return value;
     }
-    public int getPoint(){
+    public int getPoint() {
         return point;
     }
 }
