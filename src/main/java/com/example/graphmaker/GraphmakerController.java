@@ -5,7 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import java.io.File;
 
@@ -92,14 +91,14 @@ public class GraphmakerController {
     @FXML
     private void drawGraph() { // stąd wywoływać metody związane z rysowaniem
         canva.getChildren().clear(); //wszystko co rysowane na czarnym tle jest dzieckiem canva(anchorpane)
-        for (int i = 0; i < main.getX(); i++) {
-            for (int j = 0; j < main.getY(); j++) {
-                canva.getChildren().add(View.drawCircle(i, j));
+        for (int i = 0; i < main.getX(); i++) { // x to wysokość
+            for (int j = 0; j < main.getY(); j++) { // y to szerokość
+                canva.getChildren().add(View.drawCircle(j, i));
                 if (j != main.getY() - 1) {
-                    canva.getChildren().add(View.drawRightLine(i, j, main.findValue(main.getList(i * main.getY() + j), i * main.getY() + j + 1))); // value jest potrzebne żeby linia miała odpowiedni kolor
+                    canva.getChildren().add(View.drawRightLine(j, i, main.findValue(main.getList(i * main.getY() + j), i * main.getY() + j + 1))); // value jest potrzebne żeby linia miała odpowiedni kolor
                 }
                 if (i != main.getX() - 1) {
-                    canva.getChildren().add(View.drawDownLine(i, j, main.findValue(main.getList(i * main.getY() + j), (i + 1) * main.getY() + j)));
+                    canva.getChildren().add(View.drawDownLine(j, i, main.findValue(main.getList(i * main.getY() + j), (i + 1) * main.getY() + j)));
                 }
             }
         }

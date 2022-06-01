@@ -87,7 +87,7 @@ public class Graph {
                     }
                 }
             }
-        } catch (NoSuchElementException | NullPointerException  | IllegalArgumentException e) {
+        } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
             View.displayAlert("Nieprawidłowy format pliku");
         }
 
