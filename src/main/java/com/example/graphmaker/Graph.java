@@ -90,7 +90,6 @@ public class Graph {
         } catch (NoSuchElementException | NullPointerException | IllegalArgumentException e) {
             View.displayAlert("Nieprawidłowy format pliku");
         }
-
    }
 
 
@@ -100,7 +99,7 @@ public class Graph {
         for (int i = 0; i <this.x; i++) {
             for (int j = 0; j < this.y; j++) {
                 for (int k = 0; k < this.graph.get(i * this.y + j).size(); k++) {
-                    sb.append(String.format( Locale.US,"%d %f ", this.graph.get(i * this.y + j).get(k).getPoint(), this.graph.get(i * this.y + j).get(k).getValue())); // locale us po to żeby liczby były z . a nie z ,
+                    sb.append(String.format(Locale.US, "%d %f ", this.graph.get(i * this.y + j).get(k).getPoint(), this.graph.get(i * this.y + j).get(k).getValue())); // locale us po to żeby liczby były z . a nie z ,
                 }
                 sb.append("\n");
             }
@@ -109,4 +108,115 @@ public class Graph {
         return sb.toString();
     }
 
+
+
+    // Tworze dwie kolejki
+    // current, old
+    public int bfs(int a, int b, int x, int y){
+        Queue<Integer> current = new LinkedList<Integer>();
+        Queue<Integer> old = new LinkedList<Integer>();
+        int curr = a, found = 0, i, j, curr_node, k;
+
+        current.add(curr);
+        // enqueue_curr(curr);
+
+        Node tmp;
+        while(current.peek()!=null){
+            curr_node = 0;
+            if(curr == b) found = 1;
+            // wczesniej rozwiazywane to bylo poprzez uzywanie wskaznika next,
+            // teraz jednak numer krawedzi jest zawarty w tej zmiennej
+
+            i = curr / y;
+            j = curr % y;
+            tmp = this.graph.get(curr).get(curr_node);
+            if(tmp != null){
+                k = this.graph.get(curr).size() - 1;
+                if(i!=0){ // gorny
+                    if(tmp.value!=-1.0)
+                        // jesli dany numer wezla nie pojawil sie jeszcze w liscie rozpatrzonych oraz w liscie do rozpatrzenia
+                        // to zostaje on dodany do listy wezlow do rozpatrzenia
+                        if((current.contains(tmp.point)!=true)&&(old.contains(tmp.point)!=true))
+                            current.add(tmp.point);
+                    if(curr_node<k) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+                if(j+1!=y){ // lewy
+                    if(tmp.value!=-1.0)
+                        if((current.contains(tmp.point)!=true)&&(old.contains(tmp.point)!=true))
+                            current.add(tmp.point);
+                    if(curr_node<k) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+                if(j!=0){ // prawy
+                    if(tmp.value!=-1.0)
+                        if((current.contains(tmp.point)!=true)&&(old.contains(tmp.point)!=true))
+                            current.add(tmp.point);
+                    if(curr_node<k) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+                if(i+1!=x){ //dolny
+                    if(tmp.value!=-1.0)
+                        if((current.contains(tmp.point)!=true)&&(old.contains(tmp.point)!=true))
+                            current.add(tmp.point);
+                }
+            }
+
+            // zapisanie obecnego wezla do kolejki rozpatrzonych
+            // usuniecie obecnego wezla z kolejki do rozpatrzenia
+            old.add(current.poll());
+
+
+            // sytuacja, gdy kolejka do rozpotrzenia jest pusta
+            // (wszystkie dostepne wezly zostaly rozpatrzone)
+            if(current.peek() == null)
+            {
+                // sytuacja, gdy sprawdzamy spojnosc calego grafu
+                if(a == b)
+                {
+                    // if(queue_size() == (x*y))
+                    if(old.size() == (x*y))
+                    {
+                        //clear_queue_curr();
+                        //clear_queue();
+                        System.out.printf("Graf jest spojny.%n");
+                        return 2;
+                    }
+                    else
+                    {
+                        //clear_queue_curr();
+                        //clear_queue();
+                        System.out.printf("Graf nie jest spojny.%n");
+                        return 3;
+                    }
+                }
+                // sytuacja, gdy sprawdzamy tylko czy istnieje
+                // sciezka miedzy dwoma konkretnymi wezlami
+                else
+                {
+                    if(found == 0)
+                    {
+                        //clear_queue_curr();
+                        //clear_queue();
+                        System.out.printf("Sciezka miedzy wezlami %d i %d nie istnieje!n",a,b);
+                    }
+                    return found;
+                }
+            }
+
+            // zamiana numeru obecnego wezla na numer pierwszego wezla w kolejce do rozpatrzenia
+            // curr = (first_2->nb);
+            curr = current.peek();
+        }
+        return 342;
+    }
 }
