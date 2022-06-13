@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.graphmaker.GraphmakerController">
    <children>
@@ -19,5 +17,8 @@
          <content>
             <AnchorPane fx:id="canva" prefHeight="650.0" prefWidth="1266.0" style="-fx-background-color: Black;" />
          </content></ScrollPane>
+      <TextField fx:id="textF" layoutX="1.0" layoutY="35.0" prefHeight="24.0" prefWidth="180.0" promptText="Numer pierwszego wierzchołka" />
+      <TextField fx:id="textS" layoutX="215.0" layoutY="35.0" prefHeight="24.0" prefWidth="180.0" promptText="Numer drugiego wierzchołka" />
+      <Button fx:id="buttonFind" layoutX="479.0" layoutY="35.0" mnemonicParsing="false" onAction="#onFindClick" text="Wyszukaj" />
    </children>
 </Pane>

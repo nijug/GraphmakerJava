@@ -65,6 +65,26 @@ public class View {
         line.setStrokeWidth(3);
         return generateLineColor(line, value);
     }
+
+    public static Line drawLeftLine(int x, int y, double value) {
+        Line line = new Line();
+        line.setStartX((x*15)-26);// 26 bo inaczej linia wchodzi kawałek na koło
+        line.setStartY((y*15)+20);
+        line.setEndX((x*15)-35);
+        line.setEndY((y*15)+20);
+        line.setStrokeWidth(3);
+        return generateLineColor(line, value);
+    }
+
+    public static Line drawUpLine( int x,int y,double value) {
+        Line line = new Line();
+        line.setStartX((x*15)+20);
+        line.setStartY((y*15)-26);
+        line.setEndX((x*15)+20);
+        line.setEndY((y*15)-35);
+        line.setStrokeWidth(3);
+        return generateLineColor(line, value);
+    }
     private static Line generateLineColor(Line line, double value) // generuje kolor dla róznych wartości odpowiadający palecie hue - wartości na począku zakresu czerwone na końcu magenta
         {
 

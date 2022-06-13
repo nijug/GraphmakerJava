@@ -58,6 +58,7 @@ public class Graph {
     public LinkedList<Node> getList(int index) { //potrzebne do użycia getValue poza klasą graph
        return this.graph.get(index);
     }
+
     public void save(String content, File file) { // zapisuje do pliku, content to graph.toString, ifile to wybrany plik z file chooser
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -111,8 +112,9 @@ public class Graph {
         return sb.toString();
     }
 
-    double dijkstra(int s, int b, int x, int y){
-        int size, result = bfs(s, b, x, y), curr_node = 0;
+    public double dijkstra(int s, int b/*, int x, int y*/){
+        int size, result = bfs(s, b/*, x, y*/), curr_node = 0;
+        current.clear();
         if(result == 0)
             return -1;
         if(result == 2)
@@ -121,6 +123,7 @@ public class Graph {
             return -3;
 
         size = old.size();
+        old.clear();
         double dist = 222222;
         int curr = s, i, j, k, l;
 
@@ -280,10 +283,12 @@ public class Graph {
             dist = ptr.getLength();
         System.out.printf("Najkrotsza sciezka miedzy punktami \"%d\" i \"%d\" ma dlugosc: %f\n", s, b, dist);
         //show_path(b);
+        //awaiting.clear();
+        //visited.clear();
         return dist;
     }
 
-    Box is_listed(int nb)
+    public Box is_listed(int nb)
     {
         if(visited.peek()!=null)
         {
@@ -318,9 +323,14 @@ public class Graph {
         return null;
     }
 
+    public void clearQueues(){
+        visited.clear();
+        awaiting.clear();
+    }
+
     // Tworze dwie kolejki
     // current, old
-    public int bfs(int a, int b, int x, int y){
+    public int bfs(int a, int b/*, int x, int y*/){
         int curr = a, found = 0, i, j, curr_node, k;
 
         current.add(curr);

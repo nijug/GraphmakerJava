@@ -16,6 +16,8 @@ public class GraphmakerController {
     private double randB;
     private double randE;
     private int n;
+    private int first;
+    private int second;
 
     private Graph main = new Graph(); // przechowywanie grafu
 
@@ -29,6 +31,12 @@ public class GraphmakerController {
     private TextField textRandE;
     @FXML
     private TextField textN; // ile ma być podziałów grafu
+    @FXML
+    private TextField textF; // numer pierwszego wierzchołka
+    @FXML
+    private TextField textS; // numer drugiego wierzchołka
+    @FXML
+    private Button buttonFind; // wyszukiwanie ścieżki między wierzchołkami
     @FXML
     private Button buttonGenerate;
     @FXML
@@ -89,6 +97,17 @@ public class GraphmakerController {
     }
 
     @FXML
+    private void onFindClick(ActionEvent event) { // wyszukiwanie ścieżki między grafami
+                first = Integer.parseInt(textF.getText());
+                second = Integer.parseInt(textS.getText());
+                //if (first < 1 || second < 1)
+                //    throw new SizeException();
+                System.out.println(main.dijkstra(first, second/*, x, y*/));
+                //drawPath();
+
+        }
+
+    @FXML
     private void drawGraph() { // stąd wywoływać metody związane z rysowaniem
         canva.getChildren().clear(); //wszystko co rysowane na czarnym tle jest dzieckiem canva(anchorpane)
         for (int i = 0; i < main.getX(); i++) { // x to wysokość
@@ -102,5 +121,30 @@ public class GraphmakerController {
                 }
             }
         }
+    }
+
+    @FXML
+    private void drawPath() { // metoda rysująca ścieżkę
+        canva.getChildren(); //wszystko co rysowane na czarnym tle jest dzieckiem canva(anchorpane)
+        Box last = main.is_listed(second);
+        Box source = main.is_listed(first);
+        Box current = last;
+        int i, j;
+        int prev_nb, current_nb;
+        while(current.getPrev()!=source){
+            current_nb = current.getNumber();
+            prev_nb = current.getPrev().getNumber();
+            i = current_nb / y;
+            j = current_nb % y;
+            if(prev_nb == current_nb - x) //gora
+                canva.getChildren().add(View.drawUpLine(j, i, main.findValue(main.getList(i * main.getY() + j), (i + 1) * main.getY() + j)));
+            else if(prev_nb == current_nb + 1) //prawo
+                canva.getChildren().add(View.drawRightLine(j, i, main.findValue(main.getList(i * main.getY() + j), i * main.getY() + j + 1))); // value jest potrzebne żeby linia miała odpowiedni kolor
+            else if(prev_nb == current_nb - 1) // lewo
+                canva.getChildren().add(View.drawLeftLine(j, i, main.findValue(main.getList(i * main.getY() + j), i * main.getY() + j + 1))); // value jest potrzebne żeby linia miała odpowiedni kolor
+            else if(prev_nb == current_nb + x) // dół
+                canva.getChildren().add(View.drawDownLine(j, i, main.findValue(main.getList(i * main.getY() + j), (i + 1) * main.getY() + j)));
+        }
+        main.clearQueues();
     }
 }
