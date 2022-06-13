@@ -4,13 +4,17 @@ import java.util.*;
 
 
 public class Graph {
-
     private int x;
     private int y;
     private double randB;
     private double randE;
     private int n;
     private ArrayList<LinkedList<Node>> graph; // graph zapisany tak samo jak w c
+
+    private Queue<Integer> current = new LinkedList<Integer>();
+    private Queue<Integer> old = new LinkedList<Integer>();
+    private PriorityQueue<Box> awaiting = new PriorityQueue<>();
+    private Queue<Box> visited =  new LinkedList<>();
 
    public double findValue(LinkedList<Node> temp, int point) { // szukanie value, pierwszy argumet tablica sąsiadów, druga nr sąsiada
        for (int i= 0; i< temp.size(); i++) {
@@ -103,18 +107,220 @@ public class Graph {
                 }
                 sb.append("\n");
             }
-
         }
         return sb.toString();
     }
 
+    double dijkstra(int s, int b, int x, int y){
+        int size, result = bfs(s, b, x, y), curr_node = 0;
+        if(result == 0)
+            return -1;
+        if(result == 2)
+            return -2;
+        if(result == 3)
+            return -3;
 
+        size = old.size();
+        double dist = 222222;
+        int curr = s, i, j, k, l;
+
+        Box crafted = null;
+
+        Box ptr = new Box(s, 0);
+        awaiting.add(ptr);
+        ptr.setPrev(awaiting.peek());
+        //box_2 *ptr = first_l;
+        //first_l_2 = first_l;
+
+
+        Node tmp;
+
+        // petla powtarza sie tyle razy ile wezlow bfs znalazl w tej czesci grafu
+        for(k = 0; k < size; k++){
+            curr_node = 0;
+            i = curr / y;
+            j = curr % y;
+
+            //tmp = graph[curr];
+
+            tmp = this.graph.get(curr).get(curr_node);
+            if(tmp != null){
+                l = this.graph.get(curr).size() - 1;
+
+                if(i != 0){ // gorny - rozpatrywanie krawedzi idacej w gore
+
+                    if(tmp.value != -1.0)
+                    {
+                        // sprawdzenie czy wskazywany wezel jest juz w liscie wezlow
+                        // (tej zawierajacej wezly rozpatrzone i nie)
+                        crafted = is_listed(tmp.point);
+                        // przypadek gdy wskazywany wezel juz znajduje sie w liscie
+                        if(crafted != null)
+                        {
+                            // jesli droga do wskazywanego wezla jest dluzsza od obecnie rozpatrywanej drogi
+                            // to nastepuje zamiana wartosci jej dlugosci oraz poprzednika wskazywanego wezla
+                            if (crafted.getLength() > (ptr.getLength() + tmp.value))
+                            {
+                                crafted.setLength(ptr.getLength() + tmp.value);
+                                crafted.setPrev(ptr);
+                            }
+                        }
+                        else
+                        {
+                            // jesli wskazywany wezel nie byl wczesniej dodany do listy,
+                            // to zostaje on dodany, i jako poprzednika w najkrotszej drodze od zrodla
+                            // wskazuje obecnie rozpatrywany wezel
+                            crafted = new Box(tmp.point, ptr.getLength() + tmp.value);
+                            awaiting.add(crafted);
+                            crafted.setPrev(ptr);
+                        }
+
+                    }
+                    if(curr_node<l) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+                if(j+1 != y){ // prawy - rozpatrywanie krawedzi idacej w prawo
+                    if(tmp.value != -1.0)
+                    {
+                        crafted = is_listed(tmp.point);
+                        if(crafted != null)
+                        {
+                            if (crafted.getLength() > (ptr.getLength() + tmp.value))
+                            {
+                                crafted.setLength(ptr.getLength() + tmp.value);
+                                crafted.setPrev(ptr);
+                            }
+                        }
+                        else
+                        {
+                            crafted = new Box(tmp.point, (ptr.getLength() + tmp.value));
+                            awaiting.add(crafted);
+                            crafted.setPrev(ptr);
+                        }
+                    }
+                    if(curr_node<l) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+                if(j != 0){ // lewy - rozpatrywanie krawedzi idacej w prawo
+                    if(tmp.value != -1.0)
+                    {
+                        crafted = is_listed(tmp.point);
+                        if(crafted != null)
+                        {
+                            if (crafted.getLength() > (ptr.getLength() + tmp.value))
+                            {
+                                crafted.setLength(ptr.getLength() + tmp.value);
+                                crafted.setPrev(ptr);
+                            }
+                        }
+                        else
+                        {
+                            crafted = new Box(tmp.point, (ptr.getLength() + tmp.value));
+                            awaiting.add(crafted);
+                            crafted.setPrev(ptr);
+                        }
+                    }
+                    if(curr_node<l) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+                if(i+1 != x){ // dolny - rozpatrywanie krawedzi idacej w dol
+
+                    if(tmp.value != -1.0)
+                    {
+                        crafted = is_listed(tmp.point);
+                        if(crafted != null)
+                        {
+                            if (crafted.getLength() > (ptr.getLength() + tmp.value))
+                            {
+                                crafted.setLength(ptr.getLength() + tmp.value);
+                                crafted.setPrev(ptr);
+                            }
+                        }
+                        else
+                        {
+                            crafted = new Box(tmp.point, (ptr.getLength() + tmp.value));
+                            awaiting.add(crafted);
+                            crafted.setPrev(ptr);
+                        }
+                    }
+                    if(curr_node<l) {
+                        curr_node++;
+                        tmp = this.graph.get(curr).get(curr_node);
+                    }
+                }
+
+            }
+
+            visited.add(awaiting.poll());
+            ptr = awaiting.peek();
+
+            // zamiana numeru obecnego wezla na numer pierwszego wezla w kolejce do rozpatrzenia (priorytetowej)
+            if(ptr!=null)
+                curr = ptr.getNumber();
+            if(curr==b){
+                visited.add(awaiting.poll());
+                break;
+            }
+
+        }
+        // jesli szukamy najkrotzej sciezki miedzy dwoma wezlami i algorytm bfs wykazal,
+        // ze przynajmniej jedna taka sciezka istnieje, to ta metoda zwraca jej dlugosc
+
+        ptr = is_listed(b);
+        if(ptr != null)
+            dist = ptr.getLength();
+        System.out.printf("Najkrotsza sciezka miedzy punktami \"%d\" i \"%d\" ma dlugosc: %f\n", s, b, dist);
+        //show_path(b);
+        return dist;
+    }
+
+    Box is_listed(int nb)
+    {
+        if(visited.peek()!=null)
+        {
+            //Box tmp = this.graph.get(curr);
+            Box le = null;
+            for(Box el : this.visited)
+            {
+                //if (this.awaiting.get(k).getNumber() == nb)
+                if(el.getNumber() == nb)
+                    return el;
+                //this.awaiting.get(k);
+                le = el;
+            }
+            if (le.getNumber()==nb)
+                return le;
+            //this.awaiting.get(k).getNumber() == nb)
+                //return this.awaiting.get(k);
+        }
+        if(awaiting.peek()!=null){
+            Box le = null;
+            for(Box el : this.awaiting)
+            {
+                //if (this.awaiting.get(k).getNumber() == nb)
+                if(el.getNumber() == nb)
+                    return el;
+                //this.awaiting.get(k);
+                le = el;
+            }
+            if (le.getNumber()==nb)
+                return le;
+        }
+        return null;
+    }
 
     // Tworze dwie kolejki
     // current, old
     public int bfs(int a, int b, int x, int y){
-        Queue<Integer> current = new LinkedList<Integer>();
-        Queue<Integer> old = new LinkedList<Integer>();
         int curr = a, found = 0, i, j, curr_node, k;
 
         current.add(curr);
@@ -217,6 +423,6 @@ public class Graph {
             // curr = (first_2->nb);
             curr = current.peek();
         }
-        return 342;
+        return 0;
     }
 }
